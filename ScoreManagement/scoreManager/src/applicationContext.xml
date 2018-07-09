@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName"
+			value="com.mysql.jdbc.Driver">
+		</property>
+		<property name="url"
+			value="jdbc:mysql://localhost:3306/scoreDB">
+		</property>
+		<property name="username" value="root"></property>
+		<property name="password" value="19960213zx"></property>
+	</bean>
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQLDialect
+				</prop>
+			</props>
+		</property>
+		<property name="mappingResources">
+			<list>
+				<value>edu/rg/score/entity/Score.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	
+    <!-- dao注入 -->
+    <bean id="scoreDao" class="edu.rg.score.dao.ScoreDao">
+       <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+       
+    <!-- service注入 -->
+    <bean id="scoreService" class="edu.rg.score.service.ScoreService">
+       <property name="scoreDao" ref="scoreDao"></property>
+    </bean>
+    
+     <!-- action注入 -->
+    <bean id="helloAction" class="edu.rg.score.action.HelloAction">
+       <property name="scoreService" ref="scoreService"></property>
+    </bean>
+</beans>
